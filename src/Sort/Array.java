@@ -75,7 +75,7 @@ public class Array {
     }
     
     private void move_vertikal(Element elem,Graphics g,int val){
-            elem.setColor(g, Color.green);
+            //elem.setColor(g, Color.green);
             for (int t = 0; t < Element.rad; t++){
                 elem.move(g, 0, val);
             }       
@@ -87,7 +87,7 @@ public class Array {
         int i = step + p;
         while (i < N) {
             Element elem = ar[i];
-            elem.setColor(g, Color.green);
+            elem.setColor(g, Color.blue);
             move_vertikal(elem,g,2);
             int l = i - step;
             while (l >= 0 && ar[l].getValue()>elem.getValue()) {

@@ -111,7 +111,7 @@ public class Element {
         x += dx;
         y += dy;
         try {
-            g.clearRect(x-rad-2, y-rad-3, 2*rad+6, 2*rad+6);
+            g.clearRect(x-rad, y-rad-3, 2*rad+7, 2*rad+6);
             this.paint(g);
             Thread.sleep(5);
         } catch (InterruptedException ex) {
