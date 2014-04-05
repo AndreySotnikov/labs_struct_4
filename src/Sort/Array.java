@@ -55,12 +55,22 @@ public class Array {
         }
     }
     private void move_group(int N, int step, int p, Graphics g, int dy) throws InterruptedException {
-        int j = p;
+        /*int j = p;
         while (j < N) {
             for (int k = 0; k < Element.rad; k++) {
                 ar[j].move(g, 0, dy);
             }
             j = j + step;
+        }
+        Thread.sleep(200);*/
+        int j = p;
+        for (int k = 0; k < Element.rad; k++) {
+            j = p;
+            while (j < N) {
+                ar[j].move(g, 0, dy);
+
+                j = j + step;
+            }
         }
         Thread.sleep(200);
     }
