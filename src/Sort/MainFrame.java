@@ -6,18 +6,9 @@
 
 package Sort;
 
-import java.awt.BasicStroke;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -55,9 +46,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Shell-sort");
+        setMinimumSize(new java.awt.Dimension(1920, 0));
         setResizable(false);
 
         sort.setText("Sort");
+        sort.setEnabled(false);
         sort.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 sortActionPerformed(evt);
@@ -148,7 +141,9 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_sortActionPerformed
 
     private void randomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_randomActionPerformed
+        g1.clearRect(700, Array.starty-80, 1000, 40);
         ar = new Array(g1,this.getBackground());
+        sort.setEnabled(true);
     }//GEN-LAST:event_randomActionPerformed
 
     private void jSpinner1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner1StateChanged
@@ -157,7 +152,7 @@ public class MainFrame extends javax.swing.JFrame {
             Element.sleeptime = val;   
     }//GEN-LAST:event_jSpinner1StateChanged
 
-    @Override
+/*    @Override
     public void update(Graphics g){
         paint(g1);
     }
@@ -167,10 +162,8 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel2.repaint();
         this.setIgnoreRepaint(false);
         Graphics2D g2d = ( Graphics2D ) g1;
-       // Stroke newStroke = new BasicStroke ( 2f );        
-       // g2d.setStroke (newStroke);
         g2d.setRenderingHint ( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
-    }
+    }*/
     
     /**
      * @param args the command line arguments

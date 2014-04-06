@@ -7,6 +7,7 @@
 package Sort;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
@@ -18,7 +19,8 @@ import java.util.Random;
 public class Array {
     private Element[] ar;
     private Graphics g;
-    public static final int size=10;
+    private int step;
+    public static final int size=23;
     public static final int startx=50;
     public static final int starty=220;
     
@@ -37,6 +39,10 @@ public class Array {
     public Element get(int i){
         return ar[i];
     }
+    
+    public int getStep(){
+        return step;
+    }
     protected ArrayList<Integer> fib(int n){
         ArrayList<Integer> dp = new ArrayList();
         dp.add(0, 0);
@@ -48,16 +54,24 @@ public class Array {
     }
     public void sort_shell() throws InterruptedException{
         int N = ar.length;
-        int d,step;
+        int d;
         ArrayList<Integer> f = fib(N);
         for(d = f.size()-1; d > 1; d--){
             step = f.get(d);
+            Font font = new Font(null,Font.BOLD,18);
+            g.setFont(font);
+            g.clearRect(700, starty-80, 1000, 40);
+            g.drawString("Шаг сортировки = "+step, 800, starty-50);
             for (int i=0;i<N;i++)
                 ar[i].setColor(g, Color.black);
             for(int p = 0;p<step;p++){
                 group_sort(N,step,p);
             }
         }
+        g.clearRect(700, starty-80, 1000, 40);
+        g.drawString("Отсортировано", 800, starty-50);
+        g.setColor(Color.black);
+        
     }
     private void move_group(int N, int step, int p, int dy) throws InterruptedException {
         int j = p;

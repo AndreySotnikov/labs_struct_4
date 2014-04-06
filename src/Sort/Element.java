@@ -11,7 +11,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -21,9 +20,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import javax.swing.DebugGraphics;
 import javax.swing.JPanel;
-import javax.swing.RepaintManager;
 
 /**
  *
@@ -31,7 +28,7 @@ import javax.swing.RepaintManager;
  */
 public class Element extends JPanel{
     public static final int rad=40;
-    BufferedImage bi = new BufferedImage(rad*2,rad*2,BufferedImage.TYPE_4BYTE_ABGR);
+    BufferedImage bi;
     private int value;
     private int x;
     private int y;
@@ -43,6 +40,7 @@ public class Element extends JPanel{
         x=cx;
         y=cy;
         this.background = background;
+        bi = new BufferedImage(rad*2,rad*2,BufferedImage.TYPE_4BYTE_ABGR);
     }
     
     public static Shape createStar(int arms, Point center, double rOuter, double rInner) {
@@ -87,34 +85,8 @@ public class Element extends JPanel{
 
     @Override
     public void paintComponent(Graphics g) {
-        //g.clearRect(x - rad, y - rad-2, 2 * rad+4, 2 * rad+4);
         paint(g);       
         g.drawImage(bi, x-rad, y-rad, this);
-        
-       /* String tmp = Integer.toString(value);
-        Graphics2D g2d = (Graphics2D) g;
-        FontRenderContext context = g2d.getFontRenderContext();
-        Font f = g.getFont();
-        Rectangle2D bounds = f.getStringBounds(tmp, context);
-        int stringWidth = (int) bounds.getWidth(); // Ширина строки
-        int stringHeight = (int) bounds.getHeight(); // Высота
-        //Отрисовка строки посередине звезды
-        g.drawString(tmp, x - stringWidth / 2, y + stringHeight / 2);*/
-        
-    /*    g.clearRect(x - rad - 1, y - rad - 2, 2 * rad + 5, 2 * rad + 4);       
-        Point pnt = new Point(x, y);
-        Shape s = createStar(5, pnt, rad, rad / 2);
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.draw(s);
-        //Получение размеров строки в пикселях
-        String tmp = Integer.toString(value);
-        FontRenderContext context = g2d.getFontRenderContext();
-        Font f = g.getFont();
-        Rectangle2D bounds = f.getStringBounds(tmp, context);
-        int stringWidth = (int) bounds.getWidth(); // Ширина строки
-        int stringHeight = (int) bounds.getHeight(); // Высота
-        //Отрисовка строки посередине звезды
-        g.drawString(tmp, x - stringWidth / 2, y + stringHeight / 2);*/
     }
     
     public void setColor(Graphics g,Color c){
@@ -133,83 +105,4 @@ public class Element extends JPanel{
     public int getValue() {
         return value;
     }
-
-/*    public Element(int cx,int cy,int val){
-        value = val;
-        x=cx;
-        y=cy;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-    public static Shape createStar(int arms, Point center, double rOuter, double rInner){
-    double angle = Math.PI / arms;
-
-    GeneralPath path = new GeneralPath();
-
-    for (int i = 0; i < 2 * arms; i++)
-    {
-        double r = (i & 1) == 0 ? rOuter : rInner;
-        Point2D.Double p = new Point2D.Double(center.x + Math.cos(i * angle) * r, center.y + Math.sin(i * angle) * r);
-        if (i == 0) 
-            path.moveTo(p.getX(), p.getY());
-        else path.lineTo(p.getX(), p.getY());
-    }
-    path.closePath();
-    return path;
-}
-    public void paint(Graphics g){
-        g.clearRect(x-rad-1, y-rad-2, 2*rad+5, 2*rad+4);
-        Point pnt = new Point(x,y);
-        //Point pnt = new Point(x,y);
-        Shape s = createStar(5,pnt,rad,rad/2);
-        //Graphics2D g2d = ( Graphics2D ) gr;
-
-        
-        Graphics2D g2d = ( Graphics2D ) g;
-        g2d.draw(s);
-        //g.drawOval((int)pnt.getX()-rad, (int)pnt.getY()-rad, rad*2, rad*2);
-            //Получение размеров строки в пикселях
-        String tmp = Integer.toString(value);
-        FontRenderContext context = g2d.getFontRenderContext();
-        Font f = g.getFont(); 
-        Rectangle2D bounds = f.getStringBounds(tmp,context);        
-        int stringWidth = (int)bounds.getWidth(); // Ширина строки
-        int stringHeight = (int)bounds.getHeight(); // Высота
-            //Отрисовка строки посередине звезды
-        g.drawString(tmp,x- stringWidth/2, y + stringHeight/2);
-        
-        
-    }
-
-    public int getValue() {
-        return value;
-    }
-    public void setColor(Graphics g,Color c){
-        g.setColor(c);
-        this.paint(g);
-    }
-    
-    public void move(Graphics g,int dx, int dy) throws InterruptedException{  
-        //this.paint(g);
-        //g.clearRect(x-rad-1, y-rad-2, 2*rad+5, 2*rad+4);
-        //this.paint(g);
-
-       // try {
-                x += dx;
-                y += dy;
-            
-            //g.clearRect(x-rad, y-rad-3, 2*rad+7, 2*rad+6);
-            this.paint(g);
-            Thread.sleep(5);
-       // } catch (InterruptedException ex) {
-            //Logger.getLogger(Element.class.getName()).log(Level.SEVERE, null, ex);
-       // }
-
-    } */
 }
