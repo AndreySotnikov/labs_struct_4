@@ -6,12 +6,17 @@
 
 package Sort;
 
+import static Sort.Array.startx;
+import static Sort.Array.starty;
 import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -24,12 +29,13 @@ public class MainFrame extends javax.swing.JFrame {
     Element c;
     Graphics g1;
     Array ar;
+    Thread run;
     /**
      * Creates new form MainFrame
      */
     public MainFrame() {
         initComponents();
-        g1=this.getGraphics();//jPanel1.getGraphics();
+        g1=this.getGraphics();
 
         
     }
@@ -44,17 +50,14 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel2 = new javax.swing.JPanel();
-        input = new javax.swing.JTextField();
         sort = new javax.swing.JButton();
+        random = new javax.swing.JButton();
+        jSpinner1 = new javax.swing.JSpinner();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Shell-sort");
         setResizable(false);
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent evt) {
-                formComponentResized(evt);
-            }
-        });
 
         sort.setText("Sort");
         sort.addActionListener(new java.awt.event.ActionListener() {
@@ -63,23 +66,46 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        random.setText("Random");
+        random.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                randomActionPerformed(evt);
+            }
+        });
+
+        jSpinner1.setValue(10);
+        jSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinner1StateChanged(evt);
+            }
+        });
+
+        jLabel1.setText("Скорость");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addComponent(input, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(random, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(sort, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(sort, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(421, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(input, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sort))
+                    .addComponent(sort)
+                    .addComponent(random)
+                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -87,7 +113,7 @@ public class MainFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -104,44 +130,34 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void sortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortActionPerformed
-        g1.clearRect(Array.startx - Element.rad, Array.starty-Element.rad, this.getWidth()-Array.startx, this.getHeight()-Array.starty);
-        String[] inp = input.getText().split(" ");
-        ArrayList<Integer> lst = new ArrayList();
-        boolean result = true;
-        for(String wrd:inp){
-            try{
-                lst.add(Integer.parseInt(wrd));
-            }catch(NumberFormatException e){
-                JOptionPane.showMessageDialog(null, "Некорректный ввод");
-                result = false;
+        g1.clearRect(Array.startx - Element.rad, Array.starty - Element.rad, this.getWidth() - Array.startx, this.getHeight() - Array.starty);
+        run = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    random.setEnabled(false);
+                    sort.setEnabled(false);
+                    ar.sort_shell();
+                    random.setEnabled(true);
+                    sort.setEnabled(true);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
-        }
-        if (!result)
-            lst.clear();
-        else{
-            if (lst.size()>10){ 
-                JOptionPane.showMessageDialog(null, "Максимальное количество-10 элементов");
-                lst.clear();
-            }else{
-                ar = new Array(lst,g1);
-                Thread run = new Thread(){
-                    @Override
-                    public void run() {
-                        try {
-                            ar.sort_shell(g1);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }                
-                };
-                run.start();
-            }
-        }
+        };
+        run.start();
+        
     }//GEN-LAST:event_sortActionPerformed
 
-    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
-        // TODO add your handling code here:
-    }//GEN-LAST:event_formComponentResized
+    private void randomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_randomActionPerformed
+        ar = new Array(g1);
+    }//GEN-LAST:event_randomActionPerformed
+
+    private void jSpinner1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner1StateChanged
+        int val = (int)jSpinner1.getValue();
+        if (val > 0)
+            Element.sleeptime = val;   
+    }//GEN-LAST:event_jSpinner1StateChanged
 
     @Override
     public void update(Graphics g){
@@ -151,13 +167,11 @@ public class MainFrame extends javax.swing.JFrame {
     public void paint(Graphics g){ 
         jPanel2.revalidate();
         jPanel2.repaint();
+        this.setIgnoreRepaint(false);
         Graphics2D g2d = ( Graphics2D ) g1;
         Stroke newStroke = new BasicStroke ( 2f );        
         g2d.setStroke (newStroke);
-        //g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,RenderingHints.VALUE_COLOR_RENDER_SPEED );
-        //g2d.setRenderingHint ( RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_SPEED);
         g2d.setRenderingHint ( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
-        
     }
     
     /**
@@ -196,8 +210,10 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField input;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JSpinner jSpinner1;
+    private javax.swing.JButton random;
     private javax.swing.JButton sort;
     // End of variables declaration//GEN-END:variables
 }

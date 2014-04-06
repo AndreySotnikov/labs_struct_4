@@ -10,26 +10,92 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.image.BufferedImage;
+import javax.swing.DebugGraphics;
+import javax.swing.JPanel;
+import javax.swing.RepaintManager;
 
 /**
  *
  * @author andrey
  */
-public class Element {
+public class Element extends JPanel{
     public static final int rad=40;
     private int value;
     private int x;
     private int y;
+    public static int sleeptime=10; 
     
     public Element(int cx,int cy,int val){
+        value = val;
+        x=cx;
+        y=cy;
+    }
+    
+    public static Shape createStar(int arms, Point center, double rOuter, double rInner) {
+        double angle = Math.PI / arms;
+
+        GeneralPath path = new GeneralPath();
+
+        for (int i = 0; i < 2 * arms; i++) {
+            double r = (i & 1) == 0 ? rOuter : rInner;
+            Point2D.Double p = new Point2D.Double(center.x + Math.cos(i * angle) * r, center.y + Math.sin(i * angle) * r);
+            if (i == 0) {
+                path.moveTo(p.getX(), p.getY());
+            } else {
+                path.lineTo(p.getX(), p.getY());
+            }
+        }
+        path.closePath();
+        return path;
+    }
+    
+    @Override
+    public void paintComponent(Graphics g) {
+        RepaintManager.currentManager(this).setDoubleBufferingEnabled(true);
+        
+        g.clearRect(x - rad - 1, y - rad - 2, 2 * rad + 5, 2 * rad + 4);       
+        Point pnt = new Point(x, y);
+        Shape s = createStar(5, pnt, rad, rad / 2);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.draw(s);
+        //Получение размеров строки в пикселях
+        String tmp = Integer.toString(value);
+        FontRenderContext context = g2d.getFontRenderContext();
+        Font f = g.getFont();
+        Rectangle2D bounds = f.getStringBounds(tmp, context);
+        int stringWidth = (int) bounds.getWidth(); // Ширина строки
+        int stringHeight = (int) bounds.getHeight(); // Высота
+        //Отрисовка строки посередине звезды
+        g.drawString(tmp, x - stringWidth / 2, y + stringHeight / 2);
+    }
+    
+    public void setColor(Graphics g,Color c){
+        g.setColor(c);
+        this.paintComponent(g);
+    }
+    
+    public void move(Graphics g, int dx, int dy) throws InterruptedException {
+        x += dx;
+        y += dy;
+        this.paintComponent(g);
+        Thread.sleep(sleeptime);
+
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+/*    public Element(int cx,int cy,int val){
         value = val;
         x=cx;
         y=cy;
@@ -59,10 +125,16 @@ public class Element {
     return path;
 }
     public void paint(Graphics g){
+        g.clearRect(x-rad-1, y-rad-2, 2*rad+5, 2*rad+4);
         Point pnt = new Point(x,y);
+        //Point pnt = new Point(x,y);
         Shape s = createStar(5,pnt,rad,rad/2);
+        //Graphics2D g2d = ( Graphics2D ) gr;
+
+        
         Graphics2D g2d = ( Graphics2D ) g;
         g2d.draw(s);
+        //g.drawOval((int)pnt.getX()-rad, (int)pnt.getY()-rad, rad*2, rad*2);
             //Получение размеров строки в пикселях
         String tmp = Integer.toString(value);
         FontRenderContext context = g2d.getFontRenderContext();
@@ -73,16 +145,7 @@ public class Element {
             //Отрисовка строки посередине звезды
         g.drawString(tmp,x- stringWidth/2, y + stringHeight/2);
         
-        /*g.clearRect(x-4, y-4, rad+8, rad+8);
-        g.drawOval(x, y, rad, rad);
-        String tmp = Integer.toString(value);
-        Graphics2D g2d = ( Graphics2D ) g;
-        FontRenderContext context = g2d.getFontRenderContext();
-        Font f = g.getFont(); 
-        Rectangle2D bounds = f.getStringBounds(tmp,context);        
-        int stringWidth = (int)bounds.getWidth(); // Ширина строки
-        int stringHeight = (int)bounds.getHeight(); // Высота
-        g.drawString(Integer.toString(value),(x+rad/2)- stringWidth/2, (y+rad/2) + stringHeight/2);*/
+        
     }
 
     public int getValue() {
@@ -92,31 +155,22 @@ public class Element {
         g.setColor(c);
         this.paint(g);
     }
-    public int compare(Element obj,Graphics g){
-        this.setColor(g, Color.green);
-        obj.setColor(g, Color.green);
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Element.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        this.setColor(g, Color.black);
-        obj.setColor(g, Color.black);
-        if (this.value>obj.value)
-            return 1;
-        else
-            return -1;
-    }
-    public void move(Graphics g,int dx, int dy){  
-        x += dx;
-        y += dy;
-        try {
-            g.clearRect(x-rad, y-rad-3, 2*rad+7, 2*rad+6);
+    
+    public void move(Graphics g,int dx, int dy) throws InterruptedException{  
+        //this.paint(g);
+        //g.clearRect(x-rad-1, y-rad-2, 2*rad+5, 2*rad+4);
+        //this.paint(g);
+
+       // try {
+                x += dx;
+                y += dy;
+            
+            //g.clearRect(x-rad, y-rad-3, 2*rad+7, 2*rad+6);
             this.paint(g);
             Thread.sleep(5);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Element.class.getName()).log(Level.SEVERE, null, ex);
-        }
+       // } catch (InterruptedException ex) {
+            //Logger.getLogger(Element.class.getName()).log(Level.SEVERE, null, ex);
+       // }
 
-    }
+    } */
 }
