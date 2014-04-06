@@ -6,6 +6,7 @@
 
 package Sort;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -14,6 +15,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
@@ -29,15 +31,18 @@ import javax.swing.RepaintManager;
  */
 public class Element extends JPanel{
     public static final int rad=40;
+    BufferedImage bi = new BufferedImage(rad*2,rad*2,BufferedImage.TYPE_4BYTE_ABGR);
     private int value;
     private int x;
     private int y;
+    private Color background;
     public static int sleeptime=10; 
     
-    public Element(int cx,int cy,int val){
+    public Element(int cx,int cy,int val,Color background){
         value = val;
         x=cx;
         y=cy;
+        this.background = background;
     }
     
     public static Shape createStar(int arms, Point center, double rOuter, double rInner) {
@@ -58,11 +63,45 @@ public class Element extends JPanel{
         return path;
     }
     
+    public void paint(Graphics g){
+        Graphics2D big = (Graphics2D)bi.getGraphics();
+        big.setColor(background);
+        big.fillRect(0, 0, rad*2, rad*2);
+        big.setColor(g.getColor());      
+        Stroke newStroke = new BasicStroke ( 2f );        
+        big.setStroke (newStroke);
+        big.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );       
+        Point pnt = new Point(rad, rad);
+        Shape s = createStar(5, pnt, rad-4, (rad-4) / 2);
+        big.draw(s);
+        //Получение размеров строки в пикселях
+        String tmp = Integer.toString(value);
+        FontRenderContext context = big.getFontRenderContext();
+        Font f = big.getFont();
+        Rectangle2D bounds = f.getStringBounds(tmp, context);
+        int stringWidth = (int) bounds.getWidth(); // Ширина строки
+        int stringHeight = (int) bounds.getHeight(); // Высота
+        //Отрисовка строки посередине звезды
+        big.drawString(tmp, rad - stringWidth / 2, rad + stringHeight / 2);
+    }
+
     @Override
     public void paintComponent(Graphics g) {
-        RepaintManager.currentManager(this).setDoubleBufferingEnabled(true);
+        //g.clearRect(x - rad, y - rad-2, 2 * rad+4, 2 * rad+4);
+        paint(g);       
+        g.drawImage(bi, x-rad, y-rad, this);
         
-        g.clearRect(x - rad - 1, y - rad - 2, 2 * rad + 5, 2 * rad + 4);       
+       /* String tmp = Integer.toString(value);
+        Graphics2D g2d = (Graphics2D) g;
+        FontRenderContext context = g2d.getFontRenderContext();
+        Font f = g.getFont();
+        Rectangle2D bounds = f.getStringBounds(tmp, context);
+        int stringWidth = (int) bounds.getWidth(); // Ширина строки
+        int stringHeight = (int) bounds.getHeight(); // Высота
+        //Отрисовка строки посередине звезды
+        g.drawString(tmp, x - stringWidth / 2, y + stringHeight / 2);*/
+        
+    /*    g.clearRect(x - rad - 1, y - rad - 2, 2 * rad + 5, 2 * rad + 4);       
         Point pnt = new Point(x, y);
         Shape s = createStar(5, pnt, rad, rad / 2);
         Graphics2D g2d = (Graphics2D) g;
@@ -75,7 +114,7 @@ public class Element extends JPanel{
         int stringWidth = (int) bounds.getWidth(); // Ширина строки
         int stringHeight = (int) bounds.getHeight(); // Высота
         //Отрисовка строки посередине звезды
-        g.drawString(tmp, x - stringWidth / 2, y + stringHeight / 2);
+        g.drawString(tmp, x - stringWidth / 2, y + stringHeight / 2);*/
     }
     
     public void setColor(Graphics g,Color c){

@@ -6,8 +6,6 @@
 
 package Sort;
 
-import static Sort.Array.startx;
-import static Sort.Array.starty;
 import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -150,7 +148,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_sortActionPerformed
 
     private void randomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_randomActionPerformed
-        ar = new Array(g1);
+        ar = new Array(g1,this.getBackground());
     }//GEN-LAST:event_randomActionPerformed
 
     private void jSpinner1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner1StateChanged
@@ -169,8 +167,8 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel2.repaint();
         this.setIgnoreRepaint(false);
         Graphics2D g2d = ( Graphics2D ) g1;
-        Stroke newStroke = new BasicStroke ( 2f );        
-        g2d.setStroke (newStroke);
+       // Stroke newStroke = new BasicStroke ( 2f );        
+       // g2d.setStroke (newStroke);
         g2d.setRenderingHint ( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
     }
     

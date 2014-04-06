@@ -23,12 +23,12 @@ public class Array {
     public static final int starty=220;
     
 
-    public Array(Graphics g){
+    public Array(Graphics g,Color clr){
         ar = new Element[size];
         this.g = g;
         Random rand = new Random();
         for (int i = 0;i < size; i++){
-            Element tmp = new Element(startx+2*Element.rad*i,starty,rand.nextInt(100));
+            Element tmp = new Element(startx+2*Element.rad*i,starty,rand.nextInt(100),clr);
             ar[i] = tmp;
             ar[i].paintComponent(g);
         }
