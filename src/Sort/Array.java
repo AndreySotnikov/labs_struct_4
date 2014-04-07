@@ -19,7 +19,7 @@ import java.util.Random;
 public class Array {
     private Element[] ar;
     private Graphics g;
-    private int step;
+    //private int step;
     public static final int size=23;
     public static final int startx=50;
     public static final int starty=220;
@@ -30,8 +30,8 @@ public class Array {
         this.g = g;
         Random rand = new Random();
         for (int i = 0;i < size; i++){
-            Element tmp = new Element(startx+2*Element.rad*i,starty,rand.nextInt(100),clr);
-            ar[i] = tmp;
+            //Element tmp = new Element(startx+2*Element.rad*i,starty,rand.nextInt(100),clr);
+            ar[i] = new Element(startx+2*Element.rad*i,starty,rand.nextInt(100),clr);//tmp;
             ar[i].paintComponent(g);
         }
     }
@@ -40,9 +40,9 @@ public class Array {
         return ar[i];
     }
     
-    public int getStep(){
-        return step;
-    }
+    //public int getStep(){
+   //     return step;
+   // }
     protected ArrayList<Integer> fib(int n){
         ArrayList<Integer> dp = new ArrayList();
         dp.add(0, 0);
@@ -54,14 +54,16 @@ public class Array {
     }
     public void sort_shell() throws InterruptedException{
         int N = ar.length;
-        int d;
+        int d,step;
         ArrayList<Integer> f = fib(N);
         for(d = f.size()-1; d > 1; d--){
             step = f.get(d);
+            //вывод надписи о шаге сортировки
             Font font = new Font(null,Font.BOLD,18);
             g.setFont(font);
             g.clearRect(700, starty-80, 1000, 40);
             g.drawString("Шаг сортировки = "+step, 800, starty-50);
+            //стандартный цвет для всего массива
             for (int i=0;i<N;i++)
                 ar[i].setColor(g, Color.black);
             for(int p = 0;p<step;p++){
@@ -73,6 +75,7 @@ public class Array {
         g.setColor(Color.black);
         
     }
+    //движение элементов находящихся с шагом step
     private void move_group(int N, int step, int p, int dy) throws InterruptedException {
         int j = p;
         for (int k = 0; k < 2*Element.rad; k++) {
@@ -85,20 +88,23 @@ public class Array {
         Thread.sleep(200);
     }
     
-    private void move_horizontal(Element el1,Element el2,int step) throws InterruptedException{
-                for (int t = 0; t < 2*Element.rad*step; t++){
-                    el1.move(g, -1, 0);
-                    el2.move(g, 1, 0);
-                }        
+    private void move_horizontal(Element el1, Element el2, int step) throws InterruptedException {
+        for (int t = 0; t < 2 * Element.rad * step; t++) {
+            el1.setColor(g, Color.blue);
+            el2.setColor(g,Color.blue);
+            el1.move(g, -1, 0);
+            el2.move(g, 1, 0);
+        }
     }
     
-    private void move_vertikal(Element elem,int val) throws InterruptedException{
-            for (int t = 0; t < 2*Element.rad; t++){
-                elem.move(g, 0, val);
-            }       
+    private void move_vertikal(Element elem, int val) throws InterruptedException {
+        for (int t = 0; t < 2 * Element.rad; t++) {
+            elem.move(g, 0, val);
+        }
     }
     
     public void group_sort(int N, int step, int p) throws InterruptedException {
+        g.setColor(Color.black);
         move_group(N, step, p, 1);
         ar[p].setColor(g, Color.red);
         int i = step + p;

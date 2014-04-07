@@ -60,16 +60,19 @@ public class Element extends JPanel{
         path.closePath();
         return path;
     }
-    
+    //рисование звездочек на буфере
     public void paint(Graphics g){
         Graphics2D big = (Graphics2D)bi.getGraphics();
         big.setColor(background);
         big.fillRect(0, 0, rad*2, rad*2);
         big.setColor(g.getColor());      
+        //толщина линий
         Stroke newStroke = new BasicStroke ( 2f );        
         big.setStroke (newStroke);
+        //сглаживание
         big.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );       
         Point pnt = new Point(rad, rad);
+        //отрисовка звездочек
         Shape s = createStar(5, pnt, rad-4, (rad-4) / 2);
         big.draw(s);
         //Получение размеров строки в пикселях
@@ -86,6 +89,7 @@ public class Element extends JPanel{
     @Override
     public void paintComponent(Graphics g) {
         paint(g);       
+        //рисование буфера на форме
         g.drawImage(bi, x-rad, y-rad, this);
     }
     
